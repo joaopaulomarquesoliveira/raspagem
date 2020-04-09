@@ -29,6 +29,7 @@ historico = ''
 eficiencia = ''
 uso = ''
 num_laudo = ''
+InfosArma = []
 
 for i in paragrafos:
     data = re.search(r'aos \d{2} de \w* de \d{4}', documento.paragraphs[i].text) # buscando o campo de data com expressões regulares
@@ -96,7 +97,12 @@ def imprimir(texto, dado):
     except TypeError:
         print("{}: Dado não localizado".format(texto))
 
-
+for paragrafoss in documento.paragraphs:
+    
+    if(re.findall(r'(\w*)[:]..', paragrafoss.text)):  # pegano informacoes das armas
+        InfosArma.append(re.findall(r'(.*)[:](.*)', paragrafoss.text))
+        
+        
 imprimir("Data do Laudo", data)
 imprimir("Referência oficio", ref_oficio)
 imprimir("Protocolo com a data", protocolo)
