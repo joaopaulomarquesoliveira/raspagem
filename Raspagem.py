@@ -30,73 +30,68 @@ eficiencia = ''
 uso = ''
 num_laudo = ''
 InfosArma = []
+aux = None
+
 
 for i in paragrafos:
-    data = re.search(r'aos \d{2} de \w* de \d{4}', documento.paragraphs[i].text) # buscando o campo de data com expressões regulares
-    if data != None:
-        data = data.group(0)[4:]
-        break
+    aux = re.search(r'aos \d{2} de \w* de \d{4}', documento.paragraphs[i].text) # buscando o campo de data com expressões regulares
+    if aux != None:
+        data = aux.group(0)[4:]
 
-    for i in paragrafos:
-        perito = re.search(r'.erit(.*) para', documento.paragraphs[i].text)
-        if perito != None:
-            perito = perito.group(0)[:-4]
-            break
-
-for i in paragrafos:
-    tipo_laudo = re.search(r'exame de(.*)', documento.paragraphs[i].text)
-    if tipo_laudo != None:
-        tipo_laudo = tipo_laudo.group(0)[9:]
-        break
+    aux = re.search(r'.erit(.*) para', documento.paragraphs[i].text)
+    if aux != None:
+        perito = aux.group(0)[:-4]
         
-for i in paragrafos:
-    oficio = re.search(r'meio d[ao](.*)protocolado', documento.paragraphs[i].text)
-    if oficio != None:
-        oficio = oficio.group(0)[7:-12]
-        break
-
-for i in paragrafos:
-    protocolo = re.search(r'sob o número (.*)', documento.paragraphs[i].text)
-    if protocolo != None:
-        protocolo = protocolo.group(0)[13:]
-        break
-
-for i in paragrafos:
-    ref_oficio = re.search(r'ref.(.*)',documento.paragraphs[i].text)
-    if ref_oficio != None:
-        ref_oficio = ref_oficio.group(0)[3:]
-        break
-
-for i in paragrafos:
-    historico = re.search(r'i - histórico:', documento.paragraphs[i].text)
-    if historico != None:
+    aux = re.search(r'exame de(.*)', documento.paragraphs[i].text)
+    if aux != None:
+        tipo_laudo = aux.group(0)[9:]
+        
+    aux = re.search(r'meio d[ao](.*)protocolado', documento.paragraphs[i].text)
+    if aux != None:
+        oficio = aux.group(0)[7:-12]
+        
+    aux = re.search(r'sob o número (.*)', documento.paragraphs[i].text)
+    if aux != None:
+        protocolo = aux.group(0)[13:]
+        
+    aux = re.search(r'ref.(.*)',documento.paragraphs[i].text)
+    if aux != None:
+        ref_oficio = aux.group(0)[3:]
+        
+    aux = re.search(r'i - histórico', documento.paragraphs[i].text)
+    if aux != None:
         historico = documento.paragraphs[i+1].text
-        break
-
-for i in paragrafos:
-    eficiencia = re.search(r'da eficiência:',documento.paragraphs[i].text)
-    if eficiencia != None:
+        
+    aux = re.search(r'da eficiência:',documento.paragraphs[i].text)
+    if aux != None:
         eficiencia = documento.paragraphs[i+1].text
-        break
+        
+    aux = re.search(r'de outros elementos', documento.paragraphs[i].text)
+    if aux != None:
+        uso = documento.paragraphs[i+1].text      
 
-for i in paragrafos:
-    uso = re.search(r'de outros elementos', documento.paragraphs[i].text)
-    if uso != None:
-        uso = documento.paragraphs[i+1].text
-        break
+    aux = re.search(r'o material:(.*)', documento.paragraphs[i].text)
+    if aux != None:
+        material = documento.paragraphs[i+2].text
+        
+    aux = re.search(r'de outros elementos:(.*)', documento.paragraphs[i].text)
+    if aux != None:
+        outros_elementos = documento.paragraphs[i+1].text
+        
+    aux = re.search(r'conslusao:(.*)', documento.paragraphs[i].text)
+    if aux != None:
+        conclusao = documento.paragraphs[i+1].text
+        
+    aux = re.search(r'laudo nº (.*)', documento.paragraphs[i].text)
+    if aux != None:
+        num_laudo = aux.group(0)[4:]
 
-for i in paragrafos:
-    num_laudo = re.search(r'laudo nº (.*)', documento.paragraphs[i].text)
-    if num_laudo != None:
-        num_laudo = num_laudo.group(0)[8:]
-        break
 
-def imprimir(texto, dado):
-    try:
-        print("{}: {}".format(texto, dado))
-    except TypeError:
-        print("{}: Dado não localizado".format(texto))
-
+### arrumar a funcao, por algum motivo pega lixo 
+    #aux = re.findall(r'(\w*)[:]..', documento.paragraphs[i].text)
+    #if aux != None:
+    #    InfosArma.append(re.findall(r'(.*)[:](.*)', documento.paragraphs[i].text))
+        
 for paragrafoss in documento.paragraphs:
     
     if(re.findall(r'(\w*)[:]..', paragrafoss.text)):  # pegano informacoes das armas
