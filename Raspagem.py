@@ -48,9 +48,9 @@ for i in paragrafos:
     if tipo_laudo != None:
         tipo_laudo = tipo_laudo.group(0)[9:]
         break
-
+        
 for i in paragrafos:
-    oficio = re.search(r'meio do(.*)protocolado', documento.paragraphs[i].text)
+    oficio = re.search(r'meio d[ao](.*)protocolado', documento.paragraphs[i].text)
     if oficio != None:
         oficio = oficio.group(0)[7:-12]
         break
