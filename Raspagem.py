@@ -2,7 +2,7 @@ from docx import *
 import re
 
 #carregando o documento
-documento = Document(r'C:\Users\juacysantos\Desktop\LP 0102-18 - AC1229 - 1 simulacro.docx')
+documento = Document(r'')
 
 def vazio(paragrafo):
     '''Função para verificar se um paragráfo contém texto'''
@@ -48,9 +48,8 @@ for i in paragrafos:
         tipo_laudo = tipo_laudo.group(0)[9:]
         break
 
-
 for i in paragrafos:
-    oficio = re.search(r'meio d[ao](.*)protocolado', documento.paragraphs[i].text)
+    oficio = re.search(r'meio do(.*)protocolado', documento.paragraphs[i].text)
     if oficio != None:
         oficio = oficio.group(0)[7:-12]
         break
