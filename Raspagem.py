@@ -16,15 +16,7 @@ def imprimir(texto, dado):
         print("{}: {}".format(texto, dado))
     except TypeError:
         print("{}: Dado não localizado".format(texto))
-        
-        
-#filtrando somente os textos do documetno
-for i in range(0,len(documento.paragraphs)):
-    if vazio(documento.paragraphs[i].text):
-        documento.paragraphs[i].text=documento.paragraphs[i].text.lower()
-        paragrafos.append(documento.paragraphs[i].text)  
-
-
+ 
 data = ''
 perito = ''
 tipo_laudo = ''
@@ -38,6 +30,16 @@ outros_elementos =''
 conclusao =''
 num_laudo =''
 InfosArma = []
+
+
+        
+#filtrando somente os textos do documetno
+for i in range(0,len(documento.paragraphs)):
+    if vazio(documento.paragraphs[i].text):
+        documento.paragraphs[i].text=documento.paragraphs[i].text.lower()
+        paragrafos.append(documento.paragraphs[i].text)  
+
+
 
 for num_para in range(0, len(paragrafos)):
     # buscando o campo de data com expressões regulares
