@@ -78,7 +78,7 @@ for i in paragrafos:
     if aux != None:
         outros_elementos = documento.paragraphs[i+1].text
         
-    aux = re.search(r'conslusao:(.*)', documento.paragraphs[i].text)
+    aux = re.search(r'conclus\wo:(.*)', documento.paragraphs[i].text)
     if aux != None:
         conclusao = documento.paragraphs[i+1].text
         
