@@ -10,7 +10,14 @@ def vazio(paragrafo):
         return False
     else:
         return True
-
+    
+def imprimir(texto, dado):
+    try:
+        print("{}: {}".format(texto, dado))
+    except TypeError:
+        print("{}: Dado não localizado".format(texto))
+        
+        
 paragrafos=[] #filtrando os paragrafos sem texto
 for i in range(0,len(documento.paragraphs)):
     if vazio(documento.paragraphs[i].text):
