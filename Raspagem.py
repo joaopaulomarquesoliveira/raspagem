@@ -65,7 +65,7 @@ for i in paragrafos:
         uso = documento.paragraphs[i+1].text
         
 
-    if (re.search(r'o material:(.*)', documento.paragraphs[i].text)):
+     if (re.search(r'\w* material:(.*)', documento.paragraphs[i].text)):
         material = documento.paragraphs[i+2].text
         
     
