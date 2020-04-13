@@ -85,17 +85,9 @@ for i in paragrafos:
     aux = re.search(r'laudo nº (.*)', documento.paragraphs[i].text)
     if aux != None:
         num_laudo = aux.group(0)[4:]
-
-
-### arrumar a funcao, por algum motivo pega lixo 
-    #aux = re.findall(r'(\w*)[:]..', documento.paragraphs[i].text)
-    #if aux != None:
-    #    InfosArma.append(re.findall(r'(.*)[:](.*)', documento.paragraphs[i].text))
-        
-for paragrafoss in documento.paragraphs:
     
-    if(re.findall(r'(\w*)[:]..', paragrafoss.text)):  # pegano informacoes das armas
-        InfosArma.append(re.findall(r'(.*)[:](.*)', paragrafoss.text))
+    if(re.findall(r'(\w*)[:]..',  documento.paragraphs[i].text)):  # pegano informacoes das armas
+        InfosArma.append(re.findall(r'(.*)[:](.*)',  documento.paragraphs[i].text))
         
         
 imprimir("Data do Laudo", data)
