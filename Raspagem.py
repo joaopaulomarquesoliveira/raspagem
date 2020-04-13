@@ -18,11 +18,11 @@ def imprimir(texto, dado):
         print("{}: Dado não localizado".format(texto))
         
         
-paragrafos=[] #filtrando os paragrafos sem texto
+#filtrando somente os textos do documetno
 for i in range(0,len(documento.paragraphs)):
     if vazio(documento.paragraphs[i].text):
         documento.paragraphs[i].text=documento.paragraphs[i].text.lower()
-        paragrafos.append(i)
+        paragrafos.append(documento.paragraphs[i].text)  
 
 
 data = ''
