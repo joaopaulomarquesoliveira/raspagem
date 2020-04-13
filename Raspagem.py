@@ -47,8 +47,8 @@ for num_para in range(0, len(paragrafos)):
     if (re.search(r', fo\w* designad\w* \w* perit(.*) para', paragrafos[num_para])):
         perito = re.search(r'.erit(.*) para', paragrafos[num_para]).group(0)[:-4]
         
-    if (re.search(r'exame de(.*)', paragrafos[num_para])):
-        tipo_laudo = re.search(r'exame de(.*)', paragrafos[num_para]).group(0)[9:]
+    if (re.search(r'proceder \w* exame \w* (.*)', paragrafos[num_para])):
+        tipo_laudo = re.search(r'proceder \w* exame \w* (.*) a fim', paragrafos[num_para]).group(0)
         
     if (re.search(r'meio d[ao](.*)protocolado', paragrafos[num_para])):
         oficio = re.search(r'meio d[ao](.*)protocolado', paragrafos[num_para]).group(0)[7:-12]
