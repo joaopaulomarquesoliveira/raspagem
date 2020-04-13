@@ -39,55 +39,56 @@ conclusao =''
 num_laudo =''
 InfosArma = []
 
-for i in paragrafos:
+for num_para in range(0, len(paragrafos)):
     # buscando o campo de data com expressões regulares
 
-    if (re.search(r'aos \d{2} de \w* de \d{4}', documento.paragraphs[i].text)):
-        data = re.search(r'aos \d{2} de \w* de \d{4}', documento.paragraphs[i].text).group(0)[4:]
+    if (re.search(r'aos \d{2} de \w* de \d{4}', paragrafos[num_para])):
+        data = re.search(r'aos \d{2} de \w* de \d{4}', paragrafos[num_para]).group(0)[4:]
 
-    if (re.search(r', fo\w* designad\w* \w* perit(.*) para', documento.paragraphs[i].text)):
-        perito = re.search(r'.erit(.*) para', documento.paragraphs[i].text).group(0)[:-4]
+    if (re.search(r', fo\w* designad\w* \w* perit(.*) para', paragrafos[num_para])):
+        perito = re.search(r'.erit(.*) para', paragrafos[num_para]).group(0)[:-4]
         
-    if (re.search(r'exame de(.*)', documento.paragraphs[i].text)):
-        tipo_laudo = re.search(r'exame de(.*)', documento.paragraphs[i].text).group(0)[9:]
+    if (re.search(r'exame de(.*)', paragrafos[num_para])):
+        tipo_laudo = re.search(r'exame de(.*)', paragrafos[num_para]).group(0)[9:]
         
-    if (re.search(r'meio d[ao](.*)protocolado', documento.paragraphs[i].text)):
-        oficio = re.search(r'meio d[ao](.*)protocolado', documento.paragraphs[i].text).group(0)[7:-12]
+    if (re.search(r'meio d[ao](.*)protocolado', paragrafos[num_para])):
+        oficio = re.search(r'meio d[ao](.*)protocolado', paragrafos[num_para]).group(0)[7:-12]
         
-    if (re.search(r'sob o número (.*)', documento.paragraphs[i].text)):
-        protocolo = re.search(r'sob o número (.*)', documento.paragraphs[i].text).group(0)[13:]
+    if (re.search(r'sob o número (.*)', paragrafos[num_para])):
+        protocolo = re.search(r'sob o número (.*)', paragrafos[num_para]).group(0)[13:]
         
-    if (re.search(r'ref.(.*)',documento.paragraphs[i].text)):
-        ref_oficio = re.search(r'ref.(.*)',documento.paragraphs[i].text).group(0)[3:]
-        
-    
-    if (re.search(r'i - histórico', documento.paragraphs[i].text)):
-        historico = documento.paragraphs[i+1].text
-        
-    if (re.search(r'da eficiência:',documento.paragraphs[i].text)):
-        eficiencia = documento.paragraphs[i+1].text
+    if (re.search(r'ref.(.*)',paragrafos[num_para])):
+        ref_oficio = re.search(r'ref.(.*)',paragrafos[num_para]).group(0)[3:]
         
     
-    if (re.search(r'de outros elementos', documento.paragraphs[i].text)):
-        uso = documento.paragraphs[i+1].text
+    if (re.search(r'i - hist\wrico', paragrafos[num_para])):
+        historico = paragrafos[num_para +1]
+        
+    if (re.search(r'da efici\wncia:',paragrafos[num_para])):
+        eficiencia = paragrafos[num_para +1]
+        
+    
+    if (re.search(r'de outros elementos', paragrafos[num_para])):
+        uso = paragrafos[num_para +1] 
         
 
-     if (re.search(r'\w* material:(.*)', documento.paragraphs[i].text)):
-        material = documento.paragraphs[i+2].text
+    if (re.search(r'\w\w material', paragrafos[num_para])):
+        material = paragrafos[num_para +2]
         
     
-    if (re.search(r'de outros elementos:(.*)', documento.paragraphs[i].text)):
-        outros_elementos = documento.paragraphs[i+1].text
+    if (re.search(r'de outros elementos:(.*)', paragrafos[num_para])):
+        outros_elementos = paragrafos[num_para +1]
         
   
-    if (re.search(r'conclu\wao:(.*)', documento.paragraphs[i].text)):
-        conclusao = documento.paragraphs[i+1].text
+    if (re.search(r'conclus\wo:(.*)', paragrafos[num_para])):
+        conclusao = paragrafos[num_para +1]
         
-    if (re.search(r'laudo nº (.*)', documento.paragraphs[i].text)):
-        num_laudo = re.search(r'laudo nº (.*)', documento.paragraphs[i].text).group(0)[4:]
+    if (re.search(r'laudo nº (.*)', paragrafos[num_para])):
+        num_laudo = re.search(r'laudo nº (.*)', paragrafos[num_para]).group(0)[4:]
  
-    if(re.findall(r'(\w*)[:]..',  documento.paragraphs[i].text)):  # pegano informacoes das armas
-        InfosArma.append(re.findall(r'(.*)[:](.*)',  documento.paragraphs[i].text))
+    if(re.findall(r'(\w*)[:]..',  paragrafos[num_para])):  # pegano informacoes das armas
+        InfosArma.append(re.findall(r'(.*)[:](.*)',  paragrafos[num_para]))
+        
         
         
 imprimir("Data do Laudo", data)
