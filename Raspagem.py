@@ -20,6 +20,7 @@ for i in range(0,len(documento.paragraphs)):
 for i in paragrafos:
     documento.paragraphs[i].text=documento.paragraphs[i].text.lower()
 
+
 data = ''
 perito = ''
 tipo_laudo = ''
@@ -28,10 +29,11 @@ ref_oficio = ''
 historico = ''
 eficiencia = ''
 uso = ''
-num_laudo = ''
+material =''
+outros_elementos =''
+conclusao =''
+num_laudo =''
 InfosArma = []
-aux = None
-
 
 for i in paragrafos:
     # buscando o campo de data com expressões regulares
