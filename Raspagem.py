@@ -4,19 +4,20 @@ import re
 #carregando o documento
 documento = Document(r'')
 
-def vazio(paragrafo):
-    '''Função para verificar se um paragráfo contém texto'''
-    if paragrafo == '':
-        return False
-    else:
-        return True
-    
 def imprimir(texto, dado):
     try:
         print("{}: {}".format(texto, dado))
     except TypeError:
         print("{}: Dado não localizado".format(texto))
- 
+
+def FiltraTexto(documento):
+    paragrafos = []
+    for i in range(0,len(documento.paragraphs)):
+        documento.paragraphs[i].text=documento.paragraphs[i].text.lower().strip() 
+        paragrafos.append(documento.paragraphs[i].text)    
+    paragrafos = [ elem for elem in paragrafos if elem != '']        
+    return paragrafos
+
 data = ''
 perito = ''
 tipo_laudo = ''
@@ -30,15 +31,11 @@ outros_elementos =''
 conclusao =''
 num_laudo =''
 InfosArma = []
-
+paragrafos = [] 
 
         
 #filtrando somente os textos do documetno
-for i in range(0,len(documento.paragraphs)):
-    if vazio(documento.paragraphs[i].text):
-        documento.paragraphs[i].text=documento.paragraphs[i].text.lower()
-        paragrafos.append(documento.paragraphs[i].text)  
-
+paragrafos = FiltraTexto(documento)
 
 
 for num_para in range(0, len(paragrafos)):
@@ -74,7 +71,7 @@ for num_para in range(0, len(paragrafos)):
         uso = paragrafos[num_para +1] 
         
 
-    if (re.search(r'\w\w material', paragrafos[num_para])):
+    if (re.search(r'\w\w material:', paragrafos[num_para])):
         material = paragrafos[num_para +2]
         
     
