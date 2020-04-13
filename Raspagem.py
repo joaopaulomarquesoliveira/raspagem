@@ -14,11 +14,8 @@ def vazio(paragrafo):
 paragrafos=[] #filtrando os paragrafos sem texto
 for i in range(0,len(documento.paragraphs)):
     if vazio(documento.paragraphs[i].text):
+        documento.paragraphs[i].text=documento.paragraphs[i].text.lower()
         paragrafos.append(i)
-
-#passando tudo para letra maiuscula
-for i in paragrafos:
-    documento.paragraphs[i].text=documento.paragraphs[i].text.lower()
 
 
 data = ''
