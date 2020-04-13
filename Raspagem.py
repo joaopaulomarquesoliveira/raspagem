@@ -2,7 +2,7 @@ from docx import *
 import re
 
 #carregando o documento
-documento = Document(r'')
+documento = Document(r'1.docx')
 
 def vazio(paragrafo):
     '''Função para verificar se um paragráfo contém texto'''
@@ -31,6 +31,7 @@ uso = ''
 num_laudo = ''
 InfosArma = []
 
+
 for i in paragrafos:
     data = re.search(r'aos \d{2} de \w* de \d{4}', documento.paragraphs[i].text) # buscando o campo de data com expressões regulares
     if data != None:
@@ -53,6 +54,13 @@ for i in paragrafos:
     oficio = re.search(r'meio d[ao](.*)protocolado', documento.paragraphs[i].text)
     if oficio != None:
         oficio = oficio.group(0)[7:-12]
+        
+        aux=str(oficio).split(' ') #Auxilia e separa oficio com data.
+        for i in aux:
+            if i != 'de':
+                data_oficio=[]
+                data_oficio.append(i)
+                                
         break
 
 for i in paragrafos:
@@ -106,7 +114,8 @@ for paragrafoss in documento.paragraphs:
 imprimir("Data do Laudo", data)
 imprimir("Referência oficio", ref_oficio)
 imprimir("Protocolo com a data", protocolo)
-imprimir("Oficio com a data", oficio)
+imprimir("Oficio ", oficio[:-14])
+imprimir("Data do Oficio", data_oficio)
 imprimir("Tipo do Laudo", tipo_laudo)
 imprimir("Peritos", perito)
 imprimir("Historico", historico)
