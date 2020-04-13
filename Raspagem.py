@@ -73,7 +73,7 @@ for i in paragrafos:
         outros_elementos = documento.paragraphs[i+1].text
         
   
-    if (re.search(r'conslusao:(.*)', documento.paragraphs[i].text)):
+    if (re.search(r'conclu\wao:(.*)', documento.paragraphs[i].text)):
         conclusao = documento.paragraphs[i+1].text
         
     if (re.search(r'laudo nº (.*)', documento.paragraphs[i].text)):
