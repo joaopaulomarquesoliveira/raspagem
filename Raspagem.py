@@ -144,7 +144,7 @@ for arquivo in lista_de_arquivos:
 
 
     ## atribuindo as informacoes das armas
-    Dados.update(EncontraArma(Marcadores))
+    Dados.update(EncontraArma(Marcadores, paragrafos))
 
     ### mostrando os dados:
     for key, value in Dados.items():
