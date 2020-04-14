@@ -7,12 +7,17 @@ import unidecode
 #carregando o documento
 documento = Document()
 
-    
-def imprimir(texto, dado):
-    try:
-        print("{}: {}\n".format(texto, dado))
-    except TypeError:
-        print("{}: Dado não localizado\n".format(texto))
+def PegaTodaTexto(texto, lugar_texto, Marcadores):
+    aux = 0
+    for posicao in range(0, len(Marcadores)):
+        if Marcadores[posicao] == texto[lugar_texto]:
+            aux = posicao +1
+    armazenar = []
+    for posicao in range(lugar_texto +1, len(texto)):
+        if Marcadores[aux]== texto[posicao]:
+            break
+        armazenar.append(texto[posicao])
+    return armazenar 
         
 
 def PegaTodaTexto(texto, lugar_texto, Marcadores):
@@ -105,17 +110,11 @@ for num_para in range(0, len(paragrafos)):
     if (re.search(r'\Aiii .* conclusao:(.*)', paragrafos[num_para])):
         Dados['conclusao'] = PegaTodaTexto(paragrafos, num_para, Marcadores)
 
-### pegano informacoes das armas
-    if(re.findall(r'(\w*)[:]..',  paragrafos[num_para])):  
-        Infos.append(re.findall(r'(.*)[:](.*)',  paragrafos[num_para]))
-
-        
 
 
-##atribuindo mais dados ao dicionario: bug quando ha repeticao de chaves, perde-se info
-for itens in Infos:
-    Dados.update(itens)
-    
+## atribuindo as informacoes das armas
+Dados.update(EncontraArma(Marcadores))
+
 ### mostrando os dados:
 for key, value in Dados.items():
     print(key, ' : ', value,'\n')
