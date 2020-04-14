@@ -2,10 +2,12 @@ from docx import *
 import re
 import os
 import unidecode
+import json
 
 os.chdir(r'') #colocar o caminho para a pasta com os arquivos que serão raspados
 lista_de_arquivos = os.listdir(os.getcwd())
 lista_de_arquivos = [arq for arq in lista_de_arquivos if re.search(r'.docx', arq)] #deixando apenas os .docx
+local_json = r'' #colocar o caminho para o local de salvar o json
 
 def EncontraArma(marcadores, texto):
     arma = []
@@ -89,6 +91,14 @@ def SelecionarParagrafos( texto, localizacao):
         localizacao = localizacao + 1
     return salvar
 
+def salvar_json(nome_do_arquivo, dicionario, local):
+    aux = os.getcwd()
+    os.chdir(local)
+    with open(nome_do_arquivo+'.json', 'w') as arquivo:
+        json.dump(dicionario, arquivo)
+        arquivo.close()
+    os.chdir(aux)
+
 for arquivo in lista_de_arquivos:
     documento = Document(arquivo)
     
@@ -150,3 +160,5 @@ for arquivo in lista_de_arquivos:
     ### mostrando os dados:
     for key, value in Dados.items():
         print(key, ' : ', value,'\n')
+
+    salvar_json(arquivo[:-5], Dados, local_json)
