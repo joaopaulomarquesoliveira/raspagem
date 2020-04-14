@@ -7,17 +7,29 @@ import unidecode
 #carregando o documento
 documento = Document()
 
-def PegaTodaTexto(texto, lugar_texto, Marcadores):
-    aux = 0
-    for posicao in range(0, len(Marcadores)):
-        if Marcadores[posicao] == texto[lugar_texto]:
-            aux = posicao +1
-    armazenar = []
-    for posicao in range(lugar_texto +1, len(texto)):
-        if Marcadores[aux]== texto[posicao]:
-            break
-        armazenar.append(texto[posicao])
-    return armazenar 
+def EncontraArma(marcadores):
+    arma = []
+    dicionario_arma = {}
+    
+    for indice in range(0, len(marcadores)):
+        if(re.findall(r'\Ada.* arma.* \d*',  marcadores[indice])):
+            arma.append(indice)
+        if( re.search(r'\Ad\w* materi\w*:', marcadores[indice])):
+            arma.append(indice)
+          
+    for  indice in range(0, len(arma) -1):
+        dic = {}
+        aux = arma[indice] + 1
+        for posi in range(0, len(paragrafos)):
+            if 
+        dic['info']= marcadores[aux].split(':')[0]
+        aux = aux +1
+        while aux != arma[indice+1]:
+            lista = marcadores[aux].split(':')
+            dic[lista[0]]= lista[1]
+            aux = aux + 1
+        dicionario_arma['Arma'+str(indice)] = dic
+    return dicionario_arma    
         
 
 def PegaTodaTexto(texto, lugar_texto, Marcadores):
