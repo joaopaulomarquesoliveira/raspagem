@@ -5,6 +5,7 @@ import unidecode
 
 os.chdir(r'') #colocar o caminho para a pasta com os arquivos que serão raspados
 lista_de_arquivos = os.listdir(os.getcwd())
+lista_de_arquivos = [arq for arq in lista_de_arquivos if re.search(r'.docx', arq)] #deixando apenas os .docx
 
 def EncontraArma(marcadores, texto):
     arma = []
