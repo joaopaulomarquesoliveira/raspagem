@@ -7,29 +7,46 @@ import unidecode
 #carregando o documento
 documento = Document()
 
-def EncontraArma(marcadores):
+def EncontraArma(marcadores, texto):
     arma = []
     dicionario_arma = {}
-    
+## procura pelas armas no texto e pelo proximo marcador apos a descricao delas
     for indice in range(0, len(marcadores)):
-        if(re.findall(r'\Ada.* arma.* \d*',  marcadores[indice])):
+        if(re.findall(r'\Ada.* arma.*:',  marcadores[indice])):
+            #evita que pegue a secao sobre as armas como indice pra verificacao de armas
+            if(re.findall(r'\Adas.*armas',  marcadores[indice])):
+                pass
+            else:
+                arma.append(indice)
+        ### pega o proximo marcador depois das armas e termina a busca
+        elif( re.search(r'\Ad\w* .*:', marcadores[indice])):
             arma.append(indice)
-        if( re.search(r'\Ad\w* materi\w*:', marcadores[indice])):
-            arma.append(indice)
-          
+            break
+            
+## verifica se o proximo paragrafo no texto é texto ou chave:valor e guarda a info 
     for  indice in range(0, len(arma) -1):
         dic = {}
         aux = arma[indice] + 1
-        for posi in range(0, len(paragrafos)):
-            if 
-        dic['info']= marcadores[aux].split(':')[0]
-        aux = aux +1
-        while aux != arma[indice+1]:
-            lista = marcadores[aux].split(':')
-            dic[lista[0]]= lista[1]
-            aux = aux + 1
+        posi = 0
+    # deixando o texto alinahdo com o marcdor
+        while texto[posi]!= marcadores[arma[indice]]:
+            posi = posi +1
+            
+    # verifica se o proximo elemento do texto esta no marcador
+    # se o lemento for igual, sinal que descreve em chave:informacao, entao guarda os dados ate a proxima info
+        if paragrafos[posi+1] == marcadores[arma[indice]+1]:
+            dic['info']= marcadores[aux].split(':')[0]
+            aux = aux +1
+            while aux != arma[indice+1]:
+                lista = marcadores[aux].split(':')
+                dic[lista[0]]= lista[1]
+                aux = aux + 1
+     # se diferente e texto e entao pega ate o proximo marcador
+        else:
+            dic['info']= PegaTodaTexto(texto, posi, marcadores)
+            
         dicionario_arma['Arma'+str(indice)] = dic
-    return dicionario_arma    
+    return dicionario_arma 
         
 
 def PegaTodaTexto(texto, lugar_texto, Marcadores):
