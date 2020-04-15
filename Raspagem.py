@@ -1,115 +1,164 @@
 from docx import *
 import re
+import os
+import unidecode
+import json
 
-#carregando o documento
-documento = Document(r'')
+os.chdir(r'') #colocar o caminho para a pasta com os arquivos que serão raspados
+lista_de_arquivos = os.listdir(os.getcwd())
+lista_de_arquivos = [arq for arq in lista_de_arquivos if re.search(r'.docx', arq)] #deixando apenas os .docx
+local_json = r'' #colocar o caminho para o local de salvar o json
 
-def vazio(paragrafo):
-    '''Função para verificar se um paragráfo contém texto'''
-    if paragrafo == '':
-        return False
-    else:
-        return True
-
-paragrafos=[] #filtrando os paragrafos sem texto
-for i in range(0,len(documento.paragraphs)):
-    if vazio(documento.paragraphs[i].text):
-        paragrafos.append(i)
-
-#passando tudo para letra maiuscula
-for i in paragrafos:
-    documento.paragraphs[i].text=documento.paragraphs[i].text.lower()
-
-data = ''
-perito = ''
-tipo_laudo = ''
-oficio = ''
-ref_oficio = ''
-historico = ''
-eficiencia = ''
-uso = ''
-num_laudo = ''
-InfosArma = []
-
-for i in paragrafos:
-    data = re.search(r'aos \d{2} de \w* de \d{4}', documento.paragraphs[i].text) # buscando o campo de data com expressões regulares
-    if data != None:
-        data = data.group(0)[4:]
-        break
-
-    for i in paragrafos:
-        perito = re.search(r'.erit(.*) para', documento.paragraphs[i].text)
-        if perito != None:
-            perito = perito.group(0)[:-4]
+def EncontraArma(marcadores, texto):
+    arma = []
+    dicionario_arma = {}
+## procura pelas armas no texto e pelo proximo marcador apos a descricao delas
+    for indice in range(0, len(marcadores)):
+        if(re.findall(r'\Ada.* arma.*:',  marcadores[indice])):
+            #evita que pegue a secao sobre as armas como indice pra verificacao de armas
+            if(re.findall(r'\Adas.*armas',  marcadores[indice])):
+                pass
+            else:
+                arma.append(indice)
+        ### pega o proximo marcador depois das armas e termina a busca
+        elif( re.search(r'\Ad\w* .*:', marcadores[indice])):
+            arma.append(indice)
             break
-
-for i in paragrafos:
-    tipo_laudo = re.search(r'exame de(.*)', documento.paragraphs[i].text)
-    if tipo_laudo != None:
-        tipo_laudo = tipo_laudo.group(0)[9:]
-        break
+            
+## verifica se o proximo paragrafo no texto é texto ou chave:valor e guarda a info 
+    for  indice in range(0, len(arma) -1):
+        dic = {}
+        aux = arma[indice] + 1
+        posi = 0
+    # deixando o texto alinahdo com o marcdor
+        while texto[posi]!= marcadores[arma[indice]]:
+            posi = posi +1
+            
+    # verifica se o proximo elemento do texto esta no marcador
+    # se o lemento for igual, sinal que descreve em chave:informacao, entao guarda os dados ate a proxima info
+        if paragrafos[posi+1] == marcadores[arma[indice]+1]:
+            dic['info']= marcadores[aux].split(':')[0]
+            aux = aux +1
+            while aux != arma[indice+1]:
+                lista = marcadores[aux].split(':')
+                dic[lista[0]]= lista[1]
+                aux = aux + 1
+     # se diferente e texto e entao pega ate o proximo marcador
+        else:
+            dic['info']= PegaTodaTexto(texto, posi, marcadores)
+            
+        dicionario_arma['Arma'+str(indice)] = dic
+    return dicionario_arma 
         
-for i in paragrafos:
-    oficio = re.search(r'meio d[ao](.*)protocolado', documento.paragraphs[i].text)
-    if oficio != None:
-        oficio = oficio.group(0)[7:-12]
-        break
 
-for i in paragrafos:
-    protocolo = re.search(r'sob o número (.*)', documento.paragraphs[i].text)
-    if protocolo != None:
-        protocolo = protocolo.group(0)[13:]
-        break
+def PegaTodaTexto(texto, lugar_texto, Marcadores):
+    aux = 0
+    for posicao in range(0, len(Marcadores)):
+        if Marcadores[posicao] == texto[lugar_texto]:
+            aux = posicao +1
+    armazenar = []
+    for posicao in range(lugar_texto +1, len(texto)):
+        if Marcadores[aux]== texto[posicao]:
+            break
+        armazenar.append(texto[posicao])
+    return armazenar
 
-for i in paragrafos:
-    ref_oficio = re.search(r'ref.(.*)',documento.paragraphs[i].text)
-    if ref_oficio != None:
-        ref_oficio = ref_oficio.group(0)[3:]
-        break
+def DefineMarcadores(texto):
+    marcadores = []
+    for texto in paragrafos:
+        if re.findall(r'.*:',  texto):
+            marcadores.append(texto)
+    return marcadores
 
-for i in paragrafos:
-    historico = re.search(r'i - histórico:', documento.paragraphs[i].text)
-    if historico != None:
-        historico = documento.paragraphs[i+1].text
-        break
+def FiltraTexto(documento):
+    paragrafos = []
+    for paragrafo in documento.paragraphs:
+        paragrafos.append(paragrafo.text.lower().strip()) 
+    paragrafos = [ elem for elem in paragrafos if elem != '']      
+    return paragrafos
 
-for i in paragrafos:
-    eficiencia = re.search(r'da eficiência:',documento.paragraphs[i].text)
-    if eficiencia != None:
-        eficiencia = documento.paragraphs[i+1].text
-        break
+def FormataTexto( texto):
+    paragrafos =[]
+    for partes in texto:
+        paragrafos.append(unidecode.unidecode(partes))
+    return paragrafos
 
-for i in paragrafos:
-    uso = re.search(r'de outros elementos', documento.paragraphs[i].text)
-    if uso != None:
-        uso = documento.paragraphs[i+1].text
-        break
+def SelecionarParagrafos( texto, localizacao):
+    print(range(0, len(paragrafos)),'\n ??', localizacao )
+    salvar = []
+    while texto[localizacao].islower():
+        salvar.append(texto[localizacao])
+        localizacao = localizacao + 1
+    return salvar
 
-for i in paragrafos:
-    num_laudo = re.search(r'laudo nº (.*)', documento.paragraphs[i].text)
-    if num_laudo != None:
-        num_laudo = num_laudo.group(0)[8:]
-        break
+def salvar_json(nome_do_arquivo, dicionario, local):
+    aux = os.getcwd()
+    os.chdir(local)
+    with open(nome_do_arquivo+'.json', 'w') as arquivo:
+        json.dump(dicionario, arquivo)
+        arquivo.close()
+    os.chdir(aux)
 
-def imprimir(texto, dado):
-    try:
-        print("{}: {}".format(texto, dado))
-    except TypeError:
-        print("{}: Dado não localizado".format(texto))
-
-for paragrafoss in documento.paragraphs:
+for arquivo in lista_de_arquivos:
+    documento = Document(arquivo)
     
-    if(re.findall(r'(\w*)[:]..', paragrafoss.text)):  # pegano informacoes das armas
-        InfosArma.append(re.findall(r'(.*)[:](.*)', paragrafoss.text))
+    Dados =  {}
+    Marcadores = []
+    Infos = []
+    paragrafos=[] 
+
+    #filtrando somente os textos do documetno
+    paragrafos = FormataTexto(FiltraTexto(documento))
+    Marcadores = DefineMarcadores(paragrafos)
         
+    for num_para in range(0, len(paragrafos)):
+
+    ### busca os campos dentro do texto
+        if (re.search(r'aos \d{2} de \w* de \d{4}', paragrafos[num_para])):
+            Dados['data'] = re.search(r'aos \d{2} de \w* de \d{4}', paragrafos[num_para]).group(0)[4:]
+
+        if (re.search(r', fo\w* designad\w* \w* perit(.*) para', paragrafos[num_para])):
+            Dados['perito'] = re.search(r'.erit(.*) para', paragrafos[num_para]).group(0)#[:-4]
         
-imprimir("Data do Laudo", data)
-imprimir("Referência oficio", ref_oficio)
-imprimir("Protocolo com a data", protocolo)
-imprimir("Oficio com a data", oficio)
-imprimir("Tipo do Laudo", tipo_laudo)
-imprimir("Peritos", perito)
-imprimir("Historico", historico)
-imprimir("Eficiência", eficiencia)
-imprimir("Uso", uso)
-imprimir("N° Laudo", num_laudo)
+        if (re.search(r'proceder \w* exame \w* (.*)', paragrafos[num_para])):
+            Dados['tipo_laudo'] = re.search(r'proceder \w* exame \w* (.*) a fim', paragrafos[num_para]).group(0)
+        
+        if (re.search(r'meio d[ao](.*)protocolado', paragrafos[num_para])):
+            Dados['oficio'] = re.search(r'meio d[ao](.*)protocolado', paragrafos[num_para]).group(0)[7:-12]
+        
+        if (re.search(r'sob o numero (.*)', paragrafos[num_para])):
+            Dados['protocolo'] = re.search(r'sob o numero (.*)', paragrafos[num_para]).group(0)[13:]
+        
+        if (re.search(r'ref.(.*)',paragrafos[num_para])):
+            Dados['ref_oficio'] = re.search(r'ref.(.*)',paragrafos[num_para]).group(0)[3:]
+        
+        if (re.search(r'laudo no.*', paragrafos[num_para])):
+            Dados['num_laudo'] = re.search(r'laudo no(.*)', paragrafos[num_para]).group(0) 
+
+            #### utilizam funcao para saber ate onde vai o texto    
+    
+        if (re.search(r'i - historico', paragrafos[num_para])):
+            Dados['historico'] =  PegaTodaTexto(paragrafos, num_para, Marcadores)
+        
+        if (re.search(r'da efici\wncia',paragrafos[num_para])):
+            Dados['eficiencia'] = PegaTodaTexto(paragrafos, num_para, Marcadores)
+
+        if (re.search(r'de outros elementos:', paragrafos[num_para])):
+            Dados['uso'] = paragrafos[num_para + 1] 
+
+        if (re.search(r'fo\w* encaminhad\w* \w* .* mater\w*:', paragrafos[num_para])):
+            Dados['material'] = PegaTodaTexto(paragrafos, num_para, Marcadores)
+
+        if (re.search(r'\Aiii .* conclusao:(.*)', paragrafos[num_para])):
+            Dados['conclusao'] = PegaTodaTexto(paragrafos, num_para, Marcadores)
+
+
+
+    ## atribuindo as informacoes das armas
+    Dados.update(EncontraArma(Marcadores, paragrafos))
+
+    ### mostrando os dados:
+    for key, value in Dados.items():
+        print(key, ' : ', value,'\n')
+
+    salvar_json(arquivo[:-5], Dados, local_json)
