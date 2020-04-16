@@ -133,10 +133,39 @@ for arquivo in lista_de_arquivos:
             Dados['ref_oficio'] = re.search(r'ref.(.*)',paragrafos[num_para]).group(0)[3:]
         
         if (re.search(r'laudo no.*', paragrafos[num_para])):
-            Dados['num_laudo'] = re.search(r'laudo no(.*)', paragrafos[num_para]).group(0) 
+            Dados['num_laudo'] = re.search(r'laudo no(.*)', paragrafos[num_para]).group(0)
 
-            #### utilizam funcao para saber ate onde vai o texto    
-    
+        if (re.search(r'\Aref.* balistica', paragrafos[num_para])):
+            Dados['balistica'] = re.search(r': .*', paragrafos[num_para]).group(0)
+            
+        if (re.search(r'\Aref.* ip', paragrafos[num_para])):
+            Dados['ip'] = re.search(r'ip.*', paragrafos[num_para]).group(0)
+            
+### BU pode da problema pois ha varios no texto.
+### No caso o \sbu\s ate que funciona, mas se houver outro bu nesse estilo pegara lixo        
+        if (re.search(r' bu ', paragrafos[num_para])):
+            Dados['bu1'] = re.search(r' bu .*', paragrafos[num_para]).group(0)
+            
+        if (re.search(r'ref.* bu', paragrafos[num_para])):
+            Dados['bu2'] = re.search(r'bu .*', paragrafos[num_para]).group(0)
+            
+        if (re.search(r' ro ', paragrafos[num_para])):
+            Dados['ro'] = re.search(r' ro .*', paragrafos[num_para]).group(0)
+   #### utilizam funcao para saber ate onde vai o texto
+### adaptado pro segundo modelo:
+        #if (re.search(r'fo\w* encaminhad\w* \w* .* mater\w*:', paragrafos[num_para])):
+        #    Dados['material'] = PegaTodaTexto(paragrafos, num_para, Marcadores)
+# possivel generalizacao do material, falta ajustar
+        if(re.search(r'\Ad\w* mater\w*:', paragrafos[num_para])):
+            aux = []
+            aux.append(paragrafos[num_para +1])
+            aux.append(PegaTodaTexto(paragrafos, num_para +1, Marcadores))
+                          
+            Dados['material'] = aux
+### atributo do segundo modelo, de 1 arquivo            
+        if (re.search(r'\Ad\w* cartuch\w*', paragrafos[num_para])):
+            Dados['cartucho'] =  PegaTodaTexto(paragrafos, num_para, Marcadores)   
+        
         if (re.search(r'i - historico', paragrafos[num_para])):
             Dados['historico'] =  PegaTodaTexto(paragrafos, num_para, Marcadores)
         
@@ -146,8 +175,8 @@ for arquivo in lista_de_arquivos:
         if (re.search(r'de outros elementos:', paragrafos[num_para])):
             Dados['uso'] = paragrafos[num_para + 1] 
 
-        if (re.search(r'fo\w* encaminhad\w* \w* .* mater\w*:', paragrafos[num_para])):
-            Dados['material'] = PegaTodaTexto(paragrafos, num_para, Marcadores)
+        #if (re.search(r'fo\w* encaminhad\w* \w* .* mater\w*:', paragrafos[num_para])):
+        #    Dados['material'] = PegaTodaTexto(paragrafos, num_para, Marcadores)
 
         if (re.search(r'\Aiii .* conclusao:(.*)', paragrafos[num_para])):
             Dados['conclusao'] = PegaTodaTexto(paragrafos, num_para, Marcadores)
@@ -162,3 +191,4 @@ for arquivo in lista_de_arquivos:
         print(key, ' : ', value,'\n')
 
     salvar_json(arquivo[:-5], Dados, local_json)
+   
